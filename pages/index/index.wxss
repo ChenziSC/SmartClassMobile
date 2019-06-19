@@ -1,4 +1,5 @@
 /**index.wxss**/
+
 .userinfo {
   display: flex;
   flex-direction: column;
@@ -18,4 +19,66 @@
 
 .usermotto {
   margin-top: 200px;
+}
+
+.panel {
+  display: block;
+}
+
+.nav {
+  height: 70rpx;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  line-height: 60rpx;
+  background: #f4f4f4;
+  font-size: 32rpx;
+  white-space: nowrap;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  text-align: center;
+}
+
+.nav-item {
+  color: #777;
+  width: 20%;
+  display: inline-block;
+  text-align: center;
+  font-size: 32rpx;
+}
+
+.nav-item.active {
+  font-weight: bolder;
+  color: #444;
+  font-size: 36rpx;
+}
+
+.nav-item.active text {
+  padding: 10rpx 10rpx;
+  border-bottom: 4rpx solid rgba(248, 141, 0, 0.822);
+}
+
+/* .nav-item text {
+    font-size: 32rpx;
+} */
+
+.swiper-box {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding: 80rpx 10rpx;
+}
+
+.inner {
+  width: 100%;
+  margin-bottom: 80rpx;
+  display: flex;
+}
+
+.auto {
+  margin-top: 10rpx;
+  text-align: center;
+  height: 30rpx;
 }

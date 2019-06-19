@@ -1,13 +1,229 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
+
+  <!-- tab导航栏 -->
+  <!-- scroll-left属性可以控制滚动条位置 -->
+  <!-- scroll-with-animation滚动添加动画过渡 -->
+  <view>
+    <scroll-view scroll-x="true" class="nav" scroll-left="{{navScrollLeft}}" scroll-with-animation="{{true}}">
+      <block wx:for="{{tabsData}}" wx:for-index="i" wx:for-item="item" wx:key="TabsList">
+        <view class="nav-item {{currentTab.type == item.typeName ?'active':''}}" data-current="{{item}}" data-type="{{0}}" bindtap="switchTab">
+          <text>{{item.chineseName}}</text>
+        </view>
+      </block>
+    </scroll-view>
+
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
+  <i-message id="message" />
+  <i-spin size="large" fix wx:if="{{ listSpinShow }}"></i-spin>
+  <swiper class="swiper-box " current="{{currentTab.index}}" duration="300" data-type="{{1}}" bindchange="switchTab">
+    <!-- 电灯 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="lamp" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="lamp" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+
+      </scroll-view>
+    </swiper-item>
+
+    <!-- 窗户 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="window" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="window" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+                <view class="body-view">
+                  窗户覆盖百分比：
+                  <slider bindchange="windowCoverChange" value="{{item.coverPercent}}" min="0" max="100" show-value step="5" data-id="{{item.id}}" disabled="{{item.isOpen==0?true:false}}"/>
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+      </scroll-view>
+    </swiper-item>
+
+    <!-- 窗帘 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="curtain" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="curtain" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+                <view class="body-view">
+                  窗帘覆盖百分比：
+                  <slider bindchange="curtainCoverChange" value="{{item.coverPercent}}" min="0" max="100" show-value step="5" data-id="{{item.id}}" disabled="{{item.isOpen==0?true:false}}"/>
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+      </scroll-view>
+    </swiper-item>
+
+    <!-- 烟雾报警器 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="smokedetector" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="smokedetector" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+
+      </scroll-view>
+    </swiper-item>
+
+    <!-- 空调 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="airConditioning" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="airconditioning" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+                <view>
+                  温度设置（℃）：
+                  <view style="margin-top:10rpx">
+                    <i-input-number value="{{ item.settingTemperature }}" min="16" max="40" bindchange="airconditioningTemChange" data-id="{{item.id}}" data-isOpen="{{item.isOpen}}"/>
+                  </view>
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+      </scroll-view>
+    </swiper-item>
+
+    <!-- 摄像头 -->
+    <swiper-item>
+      <scroll-view scroll-y style='height: 100%;'>
+        <view class="auto">
+          <text style="margin-top:2rpx">自动调节模式</text>
+          <i-switch style="margin-left:20rpx" value="{{ autoIsOpen==0?false:true }}" size="large" data-typeName="camera" bind:change="autoSwitch" slot="footer">
+            <view slot="open">开启</view>
+            <view slot="close">关闭</view>
+          </i-switch>
+        </view>
+        <i-panel class="panel" title="设备列表">
+          <i-cell-group>
+            <block wx:for="{{listData}}" wx:key="deviceList" wx:for-index="i" wx:for-item="item">
+              <i-cell title="{{item.name}}">
+                <i-switch style="margin-right:10rpx" value="{{ item.isOpen==0?false:true }}" size="large" data-switch="{{ item.isOpen }}" data-id="{{item.id}}" data-type="camera" bind:change="deviceSwitch" slot="footer">
+                  <view slot="open">开启</view>
+                  <view slot="close">关闭</view>
+                </i-switch>
+                <view>
+                  位置：{{item.position}}
+                </view>
+                <view>
+                  状态：{{item.state}}
+                </view>
+                <view  wx:if="{{item.isOpen==1}}">
+                  上课懒散人数：{{item.lazyNum}}
+                </view>
+              </i-cell>
+            </block>
+          </i-cell-group>
+        </i-panel>
+      </scroll-view>
+    </swiper-item>
+  </swiper>
+
+
+
+
 </view>
